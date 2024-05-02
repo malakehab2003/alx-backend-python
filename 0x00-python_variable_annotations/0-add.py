@@ -3,4 +3,5 @@
 
 
 def add(a: float, b: float) -> float:
-  return a + b
+    """ add function to add two float numbers and return float number """
+    return a + b
