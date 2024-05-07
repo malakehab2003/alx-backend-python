@@ -5,8 +5,8 @@ import typing
 import asyncio
 
 
-async def async_generator() -> typing.AsyncGenerator[float, None]:
+async def async_generator() -> typing.Generator[float, None, None]:
     """ Wait one second and yield random number """
     for i in range(10):
         await asyncio.sleep(1)
-        yield random.uniform(0, 10)
+        yield random.random()
