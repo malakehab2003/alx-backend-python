@@ -6,7 +6,7 @@ from utils import access_nested_map
 from typing import Dict, Tuple, Union
 
 
-class test_access_nested_map(unittest.TestCase):
+class TestAccessNestedMap(unittest.TestCase):
     """ try test with utils.access_nested_map """
     @parameterized.expand([
         ({'a': 1}, ('a',), 1),
@@ -14,7 +14,7 @@ class test_access_nested_map(unittest.TestCase):
         ({"a": {"b": 2}}, ("a", "b"), 2)
     ])
 
-    def TestAccessNestedMap(self, map: Dict, path: Tuple[str], ex: Union[Dict, int]) -> None:
+    def test_access_nested_map(self, map: Dict, path: Tuple[str], ex: Union[Dict, int]) -> None:
         """ test nested map """
         self.assertEqual(access_nested_map(map, path), ex)
 
