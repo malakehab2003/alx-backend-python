@@ -6,7 +6,7 @@ from utils import access_nested_map
 from typing import Dict, Tuple, Union
 
 
-class TestAccessNestedMap(unittest.TestCase):
+class test_access_nested_map(unittest.TestCase):
     """ try test with utils.access_nested_map """
     @parameterized.expand([
         ({'a': 1}, ('a',), 1),
