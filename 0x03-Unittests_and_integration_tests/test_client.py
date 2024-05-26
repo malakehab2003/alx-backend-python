@@ -46,6 +46,15 @@ class TestGithubOrgClient(unittest.TestCase):
         client = GithubOrgClient('google')
         self.assertEqual(client._public_repos_url, payload['repos_url'])
 
+    @parameterized([
+        ({"license": {"key": "my_license"}}, "my_license", Exception),
+
+    ])
+    def test_has_license(self):
+        """ test has license function """
+        pass
+
+
 
 if __name__ == '__main__':
     unittest.main()
