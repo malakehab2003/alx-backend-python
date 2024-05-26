@@ -2,7 +2,7 @@
 """ create TestGithubOrgClient class """
 import unittest
 from client import GithubOrgClient
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import PropertyMock, patch, MagicMock
 from typing import Dict
 from parameterized import parameterized
 
@@ -24,6 +24,17 @@ class TestGithubOrgClient(unittest.TestCase):
         mocked_fxn.assert_called_once_with(
             "https://api.github.com/orgs/{}".format(org)
         )
+
+    @patch('client.GithubOrgClient.org', new_callable=PropertyMock)
+    def test_public_repos_url(self, mock_org):
+        """ Test the _public_repos_url property """
+        payload = {
+             'repos_url': 'https://api.github.com/orgs/google/repos'
+        }
+
+        mock_org.return_value = payload
+        client = GithubOrgClient('google')
+        self.assertEqual(client._public_repos_url, payload['repos_url'])
 
 
 if __name__ == '__main__':
