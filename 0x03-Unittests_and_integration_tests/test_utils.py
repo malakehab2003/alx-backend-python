@@ -14,18 +14,21 @@ class TestAccessNestedMap(unittest.TestCase):
         ({"a": {"b": 2}}, ("a",), {"b": 2}),
         ({"a": {"b": 2}}, ("a", "b"), 2)
     ])
-
-    def test_access_nested_map(self, map: Dict, path: Tuple[str], ex: Union[Dict, int]) -> None:
+    def test_access_nested_map(self,
+                               map: Dict,
+                               path: Tuple[str],
+                               ex: Union[Dict, int]) -> None:
         """ test nested map """
         self.assertEqual(access_nested_map(map, path), ex)
-
 
     @parameterized.expand([
         ({}, ("a",), KeyError),
         ({"a", 1}, ("a", "b"), KeyError),
     ])
-
-    def test_access_nested_map_exception(self, map: Dict, path: Tuple[str], ex: Exception) -> None:
+    def test_access_nested_map_exception(self,
+                                         map: Dict,
+                                         path: Tuple[str],
+                                         ex: Exception) -> None:
         """ test nested loop with exception """
         with self.assertRaises(ex):
             access_nested_map(map, path)
@@ -43,13 +46,13 @@ class TestGetJson(unittest.TestCase):
             mock_respond = Mock()
             mock_respond.json.return_value = payload
             mock_get.return_value = mock_respond
-            
+
             result = get_json(url)
-            
+
             mock_get.assert_called_once_with(url)
             self.assertEqual(result, payload)
 
-            
+
 class TestMemoize(unittest.TestCase):
     """ test the memoize function """
     def test_memoize(self) -> None:
@@ -62,11 +65,14 @@ class TestMemoize(unittest.TestCase):
             @memoize
             def a_property(self):
                 return self.a_method()
-        with patch.object(TestClass, 'a_method', return_value = lambda: 42) as mock_method:
+        with patch.object(TestClass,
+                          'a_method',
+                          return_value=lambda: 42) as mock_method:
             re1 = TestClass()
             self.assertEqual(re1.a_property(), 42)
             self.assertEqual(re1.a_property(), 42)
             mock_method.assert_called_once()
+
 
 if __name__ == '__main__':
     unittest.main()
