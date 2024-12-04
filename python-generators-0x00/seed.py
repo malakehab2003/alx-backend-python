@@ -2,10 +2,6 @@
 import mysql.connector
 import csv
 import uuid
-import os
-
-print("Current working directory:", os.getcwd())
-
 
 # connect to the databas
 def connect_db():
