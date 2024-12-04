@@ -47,4 +47,5 @@ def batch_processing(batch_size):
             'age': user[3]
         }
         print(user_data)
+  return user_data
 
