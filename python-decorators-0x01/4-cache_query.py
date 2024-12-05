@@ -18,8 +18,10 @@ def cache_query(func):
     def wrapper(*args, **kwargs):
         query = args[1] if len(args) > 1 else kwargs['query']
         if query in query_cache.keys():
+            print('Get result from cache')
             return query_cache[query]
         else:
+            print('Execute the command')
             result = func(*args, **kwargs)
             query_cache[query] = result
             return result
