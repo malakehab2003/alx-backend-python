@@ -5,7 +5,7 @@ import mysql.connector
 class ExecuteQuery:
   def __init__(
       self,
-      query='SELECT * FROM users WHERE age > ',
+      query='SELECT * FROM users WHERE age > %s',
       params=(25,),
       host='localhost',
       user='root',
