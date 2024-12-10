@@ -36,7 +36,7 @@ class DatabaseConnection:
 
 with DatabaseConnection() as d:
   cursor = d.cursor()
-  cursor.execute('SELECT * FROM user_data')
+  cursor.execute('SELECT * FROM users')
   result = cursor.fetchall()
   for row in result:
     print(row)
