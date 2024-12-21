@@ -16,10 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
+from rest_framework import routers
 from chats.views import ConversationViewSet, MessageViewSet
 
-routers = DefaultRouter()
+routers = routers.DefaultRouter()
 routers.register(r'conversations', ConversationViewSet, basename='conversation')
 routers.register(r'messages', MessageViewSet, basename='message')
 
