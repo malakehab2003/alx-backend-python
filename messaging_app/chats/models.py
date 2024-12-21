@@ -1,16 +1,29 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group, Permission
 import uuid
 
 class User(AbstractUser):
+  class Meta:
+    app_label = 'chats'
   user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-  first_name = models.CharField(null=False)
-  last_name = models.CharField(null=False)
+  first_name = models.CharField(max_length=100, null=False)
+  last_name = models.CharField(max_length=100, null=False)
   email = models.EmailField(unique=True, null=False, db_index=True)
-  password_hash = models.CharField(null=False)
-  phone_number = models.CharField(null=True)
-  role = models.CharField(choices=[('guest', 'Guest'), ('host', 'Host'), ('admin', 'Admin')], null=False)
+  password_hash = models.CharField(max_length=100, null=False)
+  phone_number = models.CharField(max_length=100, null=True)
+  role = models.CharField(max_length=100, choices=[('guest', 'Guest'), ('host', 'Host'), ('admin', 'Admin')], null=False)
   created_at = models.DateTimeField(auto_now=True)
+  user_permissions = models.ManyToManyField(
+    Permission,
+    blank=True,
+    related_name='chat_user_permissions'  # Change related_name to avoid clashes
+  )
+    
+  groups = models.ManyToManyField(
+    Group,
+    blank=True,
+    related_name='chat_user_groups'  # Change related_name to avoid clashes
+  )
 
 
 class Conversation(models.Model):
