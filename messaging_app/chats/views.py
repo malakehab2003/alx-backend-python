@@ -1,12 +1,24 @@
 from rest_framework import viewsets, status
+from django_filters import rest_framework as filters
 from rest_framework.response import Response
 from .models import Conversation, Message
 from .serializers import ConversationSerializer, MessageSerializer
 
 
+class ConversationFilter(filters.FilterSet):
+    # You can filter by participant ID or other fields
+    participant_id = filters.UUIDFilter(field_name="participants__id", lookup_expr="exact")
+    created_at = filters.DateFromToRangeFilter(field_name="created_at")
+
+    class Meta:
+        model = Conversation
+        fields = ['participant_id', 'created_at']
+
 class ConversationViewSet(viewsets.ModelViewSet):
     queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = ConversationFilter
 
     def create(self, request, *args, **kwargs):
         """Create a new conversation."""
@@ -19,9 +31,21 @@ class ConversationViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+class MessageFilter(filters.FilterSet):
+    sender_id = filters.UUIDFilter(field_name="sender__id", lookup_expr="exact")
+    conversation_id = filters.UUIDFilter(field_name="conversation__id", lookup_expr="exact")
+    sent_at = filters.DateFromToRangeFilter(field_name="sent_at")
+
+    class Meta:
+        model = Message
+        fields = ['sender_id', 'conversation_id', 'sent_at']
+
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = MessageFilter
 
     def create(self, request, *args, **kwargs):
         """Send a new message to an existing conversation."""
