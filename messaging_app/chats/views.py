@@ -1,8 +1,8 @@
 from rest_framework import viewsets, status
 from django_filters import rest_framework as filters
 from rest_framework.response import Response
-from .models import Conversation, Message
-from .serializers import ConversationSerializer, MessageSerializer
+from .models import Conversation, Message, User
+from .serializers import ConversationSerializer, MessageSerializer, UserSerializer
 
 
 class ConversationFilter(filters.FilterSet):
@@ -62,3 +62,7 @@ class MessageViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer

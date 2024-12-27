@@ -27,7 +27,8 @@ class MessageSerializer(serializers.ModelSerializer):
 
 class ConversationSerializer(serializers.ModelSerializer):
     messages = MessageSerializer(many=True, read_only=True)
-    participants = UserSerializer(many=True)
+
     class Meta:
         model = Conversation
         fields = '__all__'
+
