@@ -15,18 +15,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path, include
-from rest_framework import routers
-from .views import ConversationViewSet, MessageViewSet, UserViewSet
-from rest_framework_nested.routers import NestedDefaultRouter
+from rest_framework_nested import routers
+from .views import ConversationViewSet, MessageViewSet
 
-routers = routers.DefaultRouter()
-routers.register(r'conversations', ConversationViewSet, basename='conversation')
-routers.register(r'users', UserViewSet, basename='user')
-conversation_router = NestedDefaultRouter(routers, r'conversations', lookup='conversation')
-conversation_router.register(r'messages', MessageViewSet, basename='conversation-message')
+router = routers.DefaultRouter()
+router.register(r'conversations', ConversationViewSet)
+
+conversations_router = routers.NestedDefaultRouter(router, r'conversations', lookup='conversation')
+conversations_router.register(r'messages', MessageViewSet, basename='conversation-messages')
 
 urlpatterns = [
-    path('conversations/', include(routers.urls)),
-    path('user/', include(routers.urls)),
-    path('', include(conversation_router.urls)),
+    path('', include(router.urls)),
+    path('', include(conversations_router.urls)),
 ]
