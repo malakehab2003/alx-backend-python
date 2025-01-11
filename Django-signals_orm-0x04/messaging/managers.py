@@ -1,5 +1,5 @@
 from django.db import models
 
-class UnreadMessagesManager(models.Manager):
-    def unread_for_user(self, user):
+class unread_for_user(models.Manager):
+    def UnreadMessagesManager(self, user):
         return self.filter(receiver=user, read=False)
