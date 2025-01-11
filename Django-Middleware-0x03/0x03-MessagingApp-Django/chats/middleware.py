@@ -79,3 +79,25 @@ class OffensiveLanguageMiddleware:
         if x_forwarded_for:
             return x_forwarded_for.split(",")[0]
         return request.META.get("REMOTE_ADDR")
+
+class RolePermissionMiddleware:
+    """
+    Middleware to restrict access based on user roles (admin or moderator).
+    """
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        protected_paths = ["/admin/", "/moderator/"]
+
+        if any(path in request.path for path in protected_paths):
+            user = request.user
+
+            if not user.is_authenticated or user.role not in ["admin", "moderator"]:
+                return JsonResponse(
+                    {"error": "Access forbidden: Admin or Moderator role required."},
+                    status=403,
+                )
+
+        response = self.get_response(request)
+        return response
