@@ -17,7 +17,7 @@ class NotificationViewSet(viewsets.ModelViewSet):
 class DeleteUserView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def delete(self, request):
+    def delete_user(self, request):
         user = request.user
         user.delete()
         return Response({"message": "Your account has been deleted successfully."}, status=status.HTTP_200_OK)
