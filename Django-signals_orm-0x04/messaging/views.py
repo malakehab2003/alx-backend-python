@@ -55,7 +55,7 @@ class ThreadedConversationView(APIView):
 class UnreadMessagesView(APIView):
     def get(self, request):
         user = request.user
-        unread_messages = Message.unread.unread_for_user(user)
+        unread_messages = Message.unread_messages.get_unread_messages(user).only('id', 'sender', 'content', 'timestamp')
 
         data = [
             {
