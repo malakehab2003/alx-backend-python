@@ -51,3 +51,19 @@ class ThreadedConversationView(APIView):
             }
             for reply in message.replies.all()
         ]
+    
+class UnreadMessagesView(APIView):
+    def get(self, request):
+        user = request.user
+        unread_messages = Message.unread_messages.get_unread_messages(user)
+
+        data = [
+            {
+                "id": message.id,
+                "sender": message.sender.username,
+                "content": message.content,
+                "timestamp": message.timestamp,
+            }
+            for message in unread_messages
+        ]
+        return Response(data, status=status.HTTP_200_OK)
