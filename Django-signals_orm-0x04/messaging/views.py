@@ -1,5 +1,6 @@
 from rest_framework import viewsets
-from .models import Notification
+from .models import Notification, Message
+from django.shortcuts import get_object_or_404
 from .serializers import NotificationSerializer
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
@@ -21,3 +22,32 @@ class DeleteUserView(APIView):
         user = request.user
         user.delete()
         return Response({"message": "Your account has been deleted successfully."}, status=status.HTTP_200_OK)
+    
+
+class ThreadedConversationView(APIView):
+    def get(self, request, conversation_id):
+        messages = Message.objects.filter(parent_message=None, receiver_id=conversation_id).prefetch_related(
+            'replies__replies',
+        ).select_related('sender', 'receiver')
+
+        data = [
+            {
+                "id": message.id,
+                "content": message.content,
+                "timestamp": message.timestamp,
+                "replies": self.get_replies(message)
+            }
+            for message in messages
+        ]
+        return Response(data, status=status.HTTP_200_OK)
+
+    def get_replies(self, message):
+        return [
+            {
+                "id": reply.id,
+                "content": reply.content,
+                "timestamp": reply.timestamp,
+                "replies": self.get_replies(reply)
+            }
+            for reply in message.replies.all()
+        ]
