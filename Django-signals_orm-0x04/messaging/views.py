@@ -19,8 +19,8 @@ class DeleteUserView(APIView):
     permission_classes = [IsAuthenticated]
 
     def delete_user(self, request):
-        user = request.user
-        user.delete()
+        sender = request.user
+        sender.delete()
         return Response({"message": "Your account has been deleted successfully."}, status=status.HTTP_200_OK)
     
 
