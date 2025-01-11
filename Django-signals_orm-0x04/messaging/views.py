@@ -7,6 +7,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from django.views.decorators.cache import cache_page
+from django.shortcuts import render
 
 class NotificationViewSet(viewsets.ModelViewSet):
     queryset = Notification.objects.all()
@@ -24,6 +26,7 @@ class DeleteUserView(APIView):
         return Response({"message": "Your account has been deleted successfully."}, status=status.HTTP_200_OK)
     
 
+@cache_page(60)
 class ThreadedConversationView(APIView):
     def get(self, request, conversation_id):
         messages = Message.objects.filter(parent_message=None, receiver_id=conversation_id).prefetch_related(
@@ -67,3 +70,4 @@ class UnreadMessagesView(APIView):
             for message in unread_messages
         ]
         return Response(data, status=status.HTTP_200_OK)
+    
