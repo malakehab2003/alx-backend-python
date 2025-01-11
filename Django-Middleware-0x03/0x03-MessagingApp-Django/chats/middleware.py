@@ -1,6 +1,7 @@
 import datetime
 import logging
 from django.http import HttpResponseForbidden
+from django.http import JsonResponse
 
 class RequestLoggingMiddleware:
     def __init__(self, get_response):
@@ -37,3 +38,44 @@ class RestrictAccessByTimeMiddleware:
             )
         response = self.get_response(request)
         return response
+
+class OffensiveLanguageMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+        self.requests_tracker = {}
+
+    def __call__(self, request):
+        if request.method == "POST" and "/messages/" in request.path:
+            ip = self.get_client_ip(request)
+            current_time = datetime.now()
+
+            if ip not in self.requests_tracker:
+                self.requests_tracker[ip] = {"count": 1, "start_time": current_time}
+            else:
+                data = self.requests_tracker[ip]
+                elapsed_time = current_time - data["start_time"]
+
+
+                if elapsed_time > datetime.timedelta(minutes=1):
+                    self.requests_tracker[ip] = {"count": 1, "start_time": current_time}
+                else:
+                    # Enforce rate limiting
+                    if data["count"] >= 5:
+                        return JsonResponse(
+                            {"error": "Rate limit exceeded. Try again later."},
+                            status=429,
+                        )
+                    self.requests_tracker[ip]["count"] += 1
+
+        response = self.get_response(request)
+        return response
+
+    @staticmethod
+    def get_client_ip(request):
+        """
+        Retrieve the client's IP address from the request headers.
+        """
+        x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+        if x_forwarded_for:
+            return x_forwarded_for.split(",")[0]
+        return request.META.get("REMOTE_ADDR")
