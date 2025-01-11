@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from .managers import UnreadMessagesManager
+from .managers import unread_for_user
 
 class Message(models.Model):
   sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
@@ -12,7 +12,7 @@ class Message(models.Model):
   read = models.BooleanField(default=False)
 
   objects = models.Manager()
-  unread_messages = UnreadMessagesManager()
+  unread = unread_for_user()
 
 class Notification(models.Model):
     user = models.ForeignKey(User, related_name="notifications", on_delete=models.CASCADE)
