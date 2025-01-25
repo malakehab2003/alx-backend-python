@@ -24,7 +24,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: root
       MYSQL_PASSWORD: root
-      MYSQL_DATABASE: alx_prodev
+      MYSQL_DATABASE: messaging_app
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
