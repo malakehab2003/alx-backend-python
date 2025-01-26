@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'python:3'
+            image 'python:3' // Use the official Python 3 Docker image
         }
     }
     stages {
