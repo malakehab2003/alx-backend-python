@@ -16,15 +16,16 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                // Install Python dependencies
-                sh 'pip install -r requirements.txt'
+                // Create and activate virtual environment
+                sh 'python3 -m venv venv'
+                sh 'source venv/bin/activate && pip install -r requirements.txt'
             }
         }
 
         stage('Run Tests') {
             steps {
                 // Run tests using pytest
-                sh 'pytest --junitxml=test-results.xml'
+                sh 'source venv/bin/activate && pytest --junitxml=test-results.xml'
             }
             post {
                 always {
@@ -39,6 +40,13 @@ pipeline {
         always {
             // Clean up workspace
             cleanWs()
+        }
+        failure {
+            // Notify team of failure
+            echo 'Pipeline failed!'
+        }
+        success {
+            echo 'Pipeline succeeded!'
         }
     }
 }
