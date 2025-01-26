@@ -1,6 +1,12 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_HUB_CREDENTIALS = credentials('74a0b522-6290-43be-9af8-554fac6ca19c')
+        DOCKER_IMAGE_NAME = 'malakehab2003/messaging-app'
+        DOCKER_IMAGE_TAG = 'latest'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -29,6 +35,27 @@ pipeline {
                 always {
                     // Publish test results
                     junit 'test-results.xml'
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                // Build the Docker image
+                script {
+                    docker.build("${env.DOCKER_IMAGE_NAME}:${env.DOCKER_IMAGE_TAG}", './messaging_app')
+                }
+            }
+        }
+
+        stage('Push Docker Image to Docker Hub') {
+            steps {
+                // Log in to Docker Hub
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', "${env.DOCKER_HUB_CREDENTIALS}") {
+                        // Push the Docker image to Docker Hub
+                        docker.image("${env.DOCKER_IMAGE_NAME}:${env.DOCKER_IMAGE_TAG}").push()
+                    }
                 }
             }
         }
